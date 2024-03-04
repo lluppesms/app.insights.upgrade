@@ -1,0 +1,92 @@
+# ------------------------------------------------------------------------------------------------------------------------
+# Pipeline to Update App Insight Module
+# ------------------------------------------------------------------------------------------------------------------------
+name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
+pool:
+  vmImage: ubuntu-latest
+# variables:
+#   - group: UpgradeDemo
+
+# ------------------------------------------------------------------------------------------------------------------------
+trigger:
+  # this pipeline is deployed manually - nothing is run automatically...
+  - none
+
+# ----------------------------------------------------------------------------------------------------
+parameters:
+  - name: deployAction
+    displayName: Deploy Action
+    type: string
+    values:
+      - DEPLOY_CLASSIC
+      - UPGRADE_CLASSIC
+    default: UPGRADE_CLASSIC
+  - name: upgradeEnvironment
+    displayName: Environment to Upgrade
+    type: string
+    values:
+      - DEMO
+      - DEV
+      - QA
+      - PROD
+    default: DEMO
+
+# ----------------------------------------------------------------------------------------------------
+stages:
+- ${{ if eq(parameters.upgradeEnvironment, 'DEMO') }}:
+  - template: pipes/upgrade-app-insights-pipe.yml
+    parameters:
+      environmentName: 'DEMO'
+      serviceEndpointName: 'Demo Service Connection'
+      deployAction: ${{ parameters.deployAction }}
+      resourceGroupName: 'rg_sandbox_demo'
+      locationName: 'eastus'
+      instanceNames: ['lll-ai-demo-01', 'lll-ai-demo-02', 'lll-ai-demo-03']
+      workSpaceName: ''
+
+# --------------------------------------------------------------------------------
+- ${{ if eq(parameters.upgradeEnvironment, 'DEV') }}:
+  - template: pipes/upgrade-app-insights-pipe.yml
+    parameters:
+      environmentName: 'DEV'
+      serviceEndpointName: 'Dev Service Connection'
+      deployAction: ${{ parameters.deployAction }}
+      resourceGroupName: 'rg_sandbox_dev'
+      locationName: 'eastus'
+      instanceNames: ['lll-ai-dev-04', 'lll-ai-dev-05', 'lll-ai-dev-06']
+      workSpaceName: ''
+
+# --------------------------------------------------------------------------------
+# Example of deploying some with NEW Workspace, then sharing it with the others
+- ${{ if eq(parameters.upgradeEnvironment, 'QA') }}:
+  - template: pipes/upgrade-app-insights-pipe.yml
+    parameters:
+      environmentName: 'QA'
+      serviceEndpointName: 'QA Service Connection'
+      deployAction: ${{ parameters.deployAction }}
+      resourceGroupName: 'rg_sandbox_qa'
+      locationName: 'eastus'
+      instanceNames: ['lll-ai-qa-07']
+      workSpaceName: ''
+
+  - template: pipes/upgrade-app-insights-pipe.yml
+    parameters:
+      environmentName: 'QA'
+      serviceEndpointName: 'QA Service Connection'
+      deployAction: ${{ parameters.deployAction }}
+      resourceGroupName: 'rg_sandbox_qa'
+      locationName: 'eastus'
+      instanceNames: ['lll-ai-qa-08', 'lll-ai-qa-09']
+      workSpaceName: 'lll-ai-qa-07-law'
+
+# --------------------------------------------------------------------------------
+- ${{ if eq(parameters.upgradeEnvironment, 'PROD') }}:
+  - template: pipes/upgrade-app-insights-pipe.yml
+    parameters:
+      environmentName: 'PROD'
+      serviceEndpointName: 'Prod Service Connection'
+      deployAction: ${{ parameters.deployAction }}
+      resourceGroupName: 'rg_sandbox_prod'
+      locationName: 'eastus'
+      instanceNames: ['lll-ai-prod-10', 'lll-ai-prod-11', 'lll-ai-prod-12']
+      workSpaceName: ''

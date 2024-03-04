@@ -1,0 +1,51 @@
+# ------------------------------------------------------------------------------------------------------------------------
+# Pipeline Template to deploy Azure Resources Only
+# ------------------------------------------------------------------------------------------------------------------------
+parameters:
+- name: environmentName
+  type: string
+- name: instanceNames
+  type: object
+  default: []
+- name: serviceEndpointName
+  type: string
+- name: resourceGroupName
+  type: string
+- name: locationName
+  type: string
+- name: deployAction
+  type: string
+- name: workSpaceName
+  type: string
+
+# ----------------------------------------------------------------------------------------------------
+stages:
+- ${{ if eq(parameters.deployAction, 'DEPLOY_CLASSIC') }}:
+  - ${{ each instance in parameters.instanceNames }}:
+    - stage: Upgrade_${{ replace(instance, '-', '_') }}
+      displayName: Upgrade ${{ instance }}
+      jobs:
+      - template: templates/upgrade-app-insights-template.yml
+        parameters:
+          environmentName: ${{ parameters.environmentName }}
+          instanceName: ${{ instance }}
+          workSpaceName: ''
+          serviceEndpointName: ${{ parameters.serviceEndpointName }}
+          resourceGroupName: ${{ parameters.resourceGroupName }}
+          locationName: ${{ parameters.locationName }}
+          templateFileName: 'main-classic.bicep'
+
+- ${{ if eq(parameters.deployAction, 'UPGRADE_CLASSIC') }}:
+  - ${{ each instance in parameters.instanceNames }}:
+    - stage: Upgrade_${{ replace(instance, '-', '_') }}
+      displayName: Upgrade ${{ instance }}
+      jobs:
+      - template: templates/upgrade-app-insights-template.yml
+        parameters:
+          environmentName: ${{ parameters.environmentName }}
+          instanceName: ${{ instance }}
+          workSpaceName: ${{ parameters.workSpaceName }}
+          serviceEndpointName: ${{ parameters.serviceEndpointName }}
+          resourceGroupName: ${{ parameters.resourceGroupName }}
+          locationName: ${{ parameters.locationName }}
+          templateFileName: 'main.bicep'
