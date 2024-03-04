@@ -33,9 +33,10 @@ A short summary:
 ## Powershell Script to find Classic Application Insights Instances
 
 To find instances of Application Insights using classic mode, use this PowerShell Script and specify a subscription to search:
-Connect-AzAccount
+
 
 ``` bash
+Connect-AzAccount
 Get-AzApplicationInsights -SubscriptionId 'yourSubId' | Format-Table -Property Name, IngestionMode, Id, @{label='Type';expression={
     if ([string]::IsNullOrEmpty($_.IngestionMode)) {
         'Unknown'
