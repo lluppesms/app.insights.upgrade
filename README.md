@@ -56,20 +56,13 @@ Update your appInsights.bicep modules such that when they create new Application
 
 If it is desired to use an existing Log Analytics Workspace, the module should have an optional parameter that can be used to point to that existing workspace.
 
-## Short-Term Patch
+## Automated Short-Term Patch Pipeline
 
 A *short-term one-time-use-only* YML pipeline has been created to update the classic Application Insights instances to the new Application Insights instances, located in [/.azdo/pipelines/upgrade-app-insights.yml](/.azdo/pipelines/upgrade-app-insights.yml). The pipeline will update the classic Application Insights instances one environment at a time to the new Application Insights version by creating a new Log Analytics Workspace and associating them with that. Update that pipeline with your service connection names and the resource group names and the Application Insights names and run it to update the classic Application Insights instances.
 
 ## Bicep Testing Commands
 
-``` bash
-# Deploy two App Insights as classic resource (maybe?)
-az deployment group create -n manual-appinup-202403040801Z --resource-group rg_sandbox_dev --template-file 'main-classic.bicep' --parameters appInsightsName=lll-ai-test1
-az deployment group create -n manual-appinup-202403040802Z --resource-group rg_sandbox_dev --template-file 'main-classic.bicep' --parameters appInsightsName=lll-ai-test2
+Download and edit the following scripts to deploy classic instances to test with and to update them to the new format.
 
-# Upgrade App Insights with new LAW resource
-az deployment group create -n manual-appinup-202403040803Z --resource-group rg_sandbox_dev --template-file 'main.bicep' --parameters appInsightsName=lll-ai-test1
-
-# Upgrade App Insights but use existing LAW resource
-az deployment group create -n manual-appinup-202403040804Z --resource-group rg_sandbox_dev --template-file 'main.bicep' --parameters  appInsightsName=lll-ai-test2 logAnalyticsWorkspaceName=lll-ai-test1-ai-law
-```
+- Use the script [scripts/Deploy_Many_Classic.ps1](scripts/Deploy_Many_Classic.ps1) to deploy some test instances using the classic format.
+- Use the script [scripts/Update_Many_Instances.ps1](scripts/Update_Many_Instances.ps1) to deploy some test instances using the classic format.
