@@ -4,10 +4,10 @@
 # ----------------------------------------------------------------------------------------------------------
 # You can easily run this in the Azure Cloud Shell, or if you are running this locally, 
 # you may need to install tye Az module:
-#   Install-Module -Name Az -AllowClobber -Scope CurrentUser
-#   Import-Module -Name Az
+#   See https://learn.microsoft.com/en-us/powershell/azure/install-azps-windows?view=azps-11.3.0&tabs=powershell&pivots=windows-psgallery
+#   Install-Module -Name Az -Repository PSGallery -Force -AllowClobber
 # ----------------------------------------------------------------------------------------------------------
-# You may need to run this command first to connect to your subscription:
+# To start managing your Azure resources with the Az PowerShell module, launch a PowerShell session and run Connect-AzAccount to sign in to Azure:
 #   Connect-AzAccount
 # ----------------------------------------------------------------------------------------------------------
 Function ScanSubscriptionForAppInsights 
