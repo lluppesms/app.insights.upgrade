@@ -1,5 +1,11 @@
 # ------------------------------------------------------------------------------------------------------------------------
 # Update many App Insights classic instances
+# ------------------------------------------------------------------------------------------------------------------------
+# You may need to run these commands first to connect to your subscription:
+#   az login
+#   az account set --subscription <subscriptionId>
+# ------------------------------------------------------------------------------------------------------------------------
+
 $templateFileName = 'main-classic.bicep'
 
 $resourceGroupName = "rg_sandbox_demo"
